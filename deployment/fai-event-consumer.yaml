@@ -37,8 +37,8 @@ spec:
         - name: MINIO_ACCESSKEY
           value: minio
         - name: MINIO_SECRETKEY
-          value: minio123
-        image: quay.io/balki404/fai-event-emitter
+          value: minio012
+        image: quay.io/balki404/fai-event-consumer
         imagePullPolicy: Always
         name: fai-event-consumer
         ports:
