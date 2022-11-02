@@ -3,7 +3,7 @@
 ```
 oc login 
 oc new-project ml-fire-saver
-oc apply -f minio_all.yaml
+oc apply -f deployment/minio_all.yaml
 ```
 
 Get the route for the minio Web UI from `oc get route.route.openshift.io/minio-web` and create three buckets with the names - normal, fire, smoke 
@@ -14,7 +14,7 @@ Get the route for the minio Web UI from `oc get route.route.openshift.io/minio-w
 ### 2.Deploy Classifier ML app
 
 ```
-oc apply -f classifier-app.yaml 
+oc apply -f deployment/classifier-app.yaml 
 ```
 
 ### 3. Create a Kafka instance in RHOSAK
@@ -29,7 +29,7 @@ oc apply -f classifier-app.yaml
 Edit `fai-event-consumer.yaml` and set the point the value for the environment variable `KAFKA_BOOTSTRAP_SERVERS` to the Kafka instance created in step 3.
 
 ```
-oc apply -f fai-event-consumer.yaml 
+oc apply -f deployment/fai-event-consumer.yaml 
 ```
 
 ### 5. Deploy event-consumer-app
@@ -37,10 +37,21 @@ oc apply -f fai-event-consumer.yaml
 Edit `fai-event-emitter.yaml` and set the point the value for the environment variable `KAFKA_BOOTSTRAP_SERVERS` to the Kafka instance created in step 3.
 
 ```
-oc apply -f fai-event-emitter.yaml 
+oc apply -f deployment/fai-event-emitter.yaml 
 ```
 
-###6. Start capturing the activity
+### 6. Start capturing the activity
 
 1. Get the application URL from the route `fai-event-emitter` and append `/imagestreamer.html` to it to access the image capturing application. 
 2. Click the button "Start Image Streaming".
+
+![image](https://user-images.githubusercontent.com/37283315/199464034-b99e1195-ba29-47f2-8b77-76558c3d95ea.png)
+
+
+### 7. Start monitoring the activity
+
+1. Get the application URL from the route `fai-event-consumer` and append `/plots.html` to it to access the monitoring application. 
+2. Monitor the situation to see if there's any fire/smoke activity
+
+![image](https://user-images.githubusercontent.com/37283315/199463944-e1f314c0-14a3-41c0-beef-e6cb1daadbf7.png)
+
