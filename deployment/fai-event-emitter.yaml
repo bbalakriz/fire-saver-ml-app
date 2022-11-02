@@ -30,6 +30,12 @@ spec:
       - env:
         - name: KAFKA_BOOTSTRAP_SERVERS
           value: trial-kafk-cd--immn-un-cqodukqg.bf2.kafka.rhcloud.com:443
+        - name: MINIO_ENDPOINT
+          value: http://minio:9000
+        - name: MINIO_ACCESSKEY
+          value: minio
+        - name: MINIO_SECRETKEY
+          value: minio012
         image: quay.io/balki404/fai-event-emitter
         imagePullPolicy: Always
         name: fai-event-emitter
