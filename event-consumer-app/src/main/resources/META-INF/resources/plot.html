@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Fire accident monitor</title>
+    <style>
+        #chart_div {
+            width: 1800px;
+            height: 800px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        #wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>FIRE ACCIDENT MONITOR BOARD</h1>
+    <div id="wrapper">
+        <div style="float: auto; margin-right: 10px;">
+            <h3>Fire</h3>
+            <strong><span id="fire-alert" style="color:red; font-size: large;">0</span></strong>
+        </div>
+        <h3> </h3>
+        <div style="float: auto; margin-right: 10px;">
+            <h3>Smoke</h3>
+            <strong><span id="smoke-alert" style="color:brown; font-size: large;">0</span></strong>
+        </div>
+        <div style="float: auto;">
+            <h3>Normal</h3>
+            <strong><span id="normal" style="color:green; font-size: large;">0</span></strong>
+        </div>
+    </div>
+
+    <!-- CONTAINER FOR CHART -->
+    <div id="chart_div"></div>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        // load current chart package
+        google.charts.load('current', {
+            packages: ['corechart', 'line'],
+        });
+
+        // set callback function when api loaded
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            // create data object with default value
+            let data = google.visualization.arrayToDataTable([
+                ['Time', 'Fire', 'Smoke', 'Normal'],
+                [0, 0, 0, 0],
+            ]);
+
+            // create options object with titles, colors, etc.
+            let options = {
+                title: 'Trend per second',
+                hAxis: {
+                    textPosition: 'none',
+                },
+                vAxis: {
+                    title: 'Count',
+                },
+            };
+
+            // draw chart on load
+            let chart = new google.visualization.LineChart(
+                document.getElementById('chart_div')
+            );
+            chart.draw(data, options);
+
+            // max amount of data rows that should be displayed
+            let maxDatas = 150;
+
+            // interval for adding new data every 1s
+            let index = 0;
+            let randomFire = 0;
+            let randomSmoke = 0;
+            let randomNormal = 0;
+            let prevFireCount = -1;
+            let prevSmokeCount = -1;
+
+            let fire_alert = document.getElementById("fire-alert");
+            let smoke_alert = document.getElementById("smoke-alert");
+            let normal = document.getElementById("normal");
+
+            let fire_alarm = new Audio("https://www.soundjay.com/buttons/beep-02.mp3");
+            let smoke_alarm = new Audio("https://www.soundjay.com/buttons/beep-04.mp3");
+
+            setInterval(function () {
+                // instead of this random, you can make an ajax call for the current cpu usage or what ever data you want to display
+                $.get("/bucket/size/fire", function (data, status) {
+                    randomFire = Number(data)
+                    fire_alert.textContent = randomFire
+
+                    if (prevFireCount != -1 && prevFireCount != randomFire) {
+                        fire_alarm.play();
+                    }
+                    prevFireCount = randomFire
+
+                });
+
+                $.get("/bucket/size/smoke", function (data, status) {
+                    randomSmoke = Number(data)
+                    smoke_alert.textContent = randomSmoke
+
+                    if (prevSmokeCount != -1 && prevSmokeCount != randomSmoke) {
+                        smoke_alarm.play();
+                    }
+                    prevSmokeCount = randomSmoke
+                });
+
+                $.get("/bucket/size/normal", function (data, status) {
+                    randomNormal = Number(data)
+                    normal.textContent = randomNormal
+                });
+
+                if (data.getNumberOfRows() > maxDatas) {
+                    data.removeRows(0, data.getNumberOfRows() - maxDatas);
+                }
+
+                data.addRow([index, randomFire, randomSmoke, randomNormal]);
+                chart.draw(data, options);
+
+                index++;
+            }, 1000);
+        }
+    </script>
+</body>
+
+</html>

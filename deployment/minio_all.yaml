@@ -1,0 +1,137 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+  labels:
+    app.kubernetes.io/name: minio
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: minio
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: minio
+    spec:
+      containers:
+        - name: minio
+          livenessProbe:
+            httpGet:
+              path: /minio/health/live
+              port: 9000
+              scheme: HTTP
+            initialDelaySeconds: 10
+            timeoutSeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 10
+          readinessProbe:
+            httpGet:
+              path: /minio/health/ready
+              port: 9000
+              scheme: HTTP
+            initialDelaySeconds: 10
+            timeoutSeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 10
+          image: docker.io/minio/minio:latest
+          imagePullPolicy: IfNotPresent
+          resources: {}
+          args:
+            - server
+            - /storage
+            - --console-address=:33933
+          env:
+            - name: MINIO_ACCESS_KEY
+              value: "minio"
+            - name: MINIO_SECRET_KEY
+              value: "minio012"
+            - name: MINIO_PROMETHEUS_AUTH_TYPE
+              value: "public"
+            - name: MINIO_TRACE
+              value: "true"
+            - name: MINIO_ROOT_USER
+              value: "minio"
+            - name: MINIO_ROOT_PASSWORD
+              value: "minio012"
+          ports:
+            - containerPort: 9000
+            - containerPort: 33933
+          volumeMounts:
+            - name: storage
+              mountPath: "/storage"
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: minio-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: minio-api
+  labels:
+    app.kubernetes.io/name: minio
+  annotations:
+    openshift.io/host.generated: 'true'
+spec:
+  host: null
+  subdomain: ''
+  to:
+    kind: Service
+    name: minio
+    weight: 100
+  port:
+    targetPort: 9000
+  wildcardPolicy: None
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: minio-web
+  labels:
+    app.kubernetes.io/name: minio
+  annotations:
+    openshift.io/host.generated: 'true'
+spec:
+  subdomain: ''
+  to:
+    kind: Service
+    name: minio
+    weight: 100
+  port:
+    targetPort: 33933
+  wildcardPolicy: None
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+  labels:
+    app.kubernetes.io/name: minio
+spec:
+  ports:
+    - port: 9000
+      protocol: TCP
+      name: api
+    - port: 33933
+      protocol: TCP
+      name: web
+  selector:
+    app.kubernetes.io/name: minio
+  type: ClusterIP
+  sessionAffinity: None

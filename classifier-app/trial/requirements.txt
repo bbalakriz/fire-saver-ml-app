@@ -1,0 +1,4 @@
+flask
+werkzeug
+waitress
+fastai

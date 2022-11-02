@@ -1,0 +1,64 @@
+kind: KfDef
+apiVersion: kfdef.apps.kubeflow.org/v1
+metadata:
+  name: opendatahub
+spec:
+  applications:
+    - kustomizeConfig:
+        repoRef:
+          name: manifests
+          path: odh-common
+      name: odh-common
+    - kustomizeConfig:
+        repoRef:
+          name: manifests
+          path: odhseldon/cluster
+      name: odhseldon
+  repos:
+    - name: kf-manifests
+      uri: >-
+        https://github.com/opendatahub-io/manifests/tarball/v1.5-branch-openshift
+    - name: manifests
+      uri: 'https://github.com/opendatahub-io/odh-manifests/tarball/v1.3'
+---
+apiVersion: machinelearning.seldon.io/v1
+kind: SeldonDeployment
+metadata:
+  name: fire-accident-classifier
+  labels:
+    app: seldon
+  namespace: classifier-dl-dev
+spec:
+  predictors:
+    - graph:
+        children: []
+        name: classifier
+        endpoint:
+          type: REST
+        type: MODEL
+        parameters:
+          - name: rest_endpoint
+            type: STRING
+            value: http://localhost:5000
+          - name: model_name
+            type: STRING
+            value: classifier        
+      componentSpecs:
+        - spec:
+            containers:
+              - image: 'quay.io/balki404/fire-accident-classifier:latest'
+                name: classifier
+                ports:
+                 - containerPort: 5000
+                protocol: TCP
+                resources:
+                  limits:
+                    cpu: '2'
+                    memory: 4Gi
+                requests:
+                  cpu: '1'
+                  memory: 1Gi
+                terminationGracePeriodSeconds: 1
+      name: example
+      replicas: 1
+  name: classifier-serving
