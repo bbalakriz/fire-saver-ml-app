@@ -31,3 +31,16 @@ Edit `fai-event-consumer.yaml` and set the point the value for the environment v
 ```
 oc apply -f fai-event-consumer.yaml 
 ```
+
+### 5. Deploy event-consumer-app
+
+Edit `fai-event-emitter.yaml` and set the point the value for the environment variable `KAFKA_BOOTSTRAP_SERVERS` to the Kafka instance created in step 3.
+
+```
+oc apply -f fai-event-emitter.yaml 
+```
+
+###6. Start capturing the activity
+
+1. Get the application URL from the route `fai-event-emitter` and append `/imagestreamer.html` to it to access the image capturing application. 
+2. Click the button "Start Image Streaming".
