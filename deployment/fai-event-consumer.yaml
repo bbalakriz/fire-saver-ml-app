@@ -31,9 +31,9 @@ spec:
         - name: KAFKA_BOOTSTRAP_SERVERS
           value: trial-kafk-cd--immn-un-cqodukqg.bf2.kafka.rhcloud.com:443
         - name: CLIENT_ID
-          value: 138e013b-e7fc-442d-a096-22cc9a3a7207
+          value: aaaaaaaaaaaaaaaaaa
         - name: CLIENT_SECRET
-          value: BbOhbryErxzVDgXz4OZ3NdsPfrUL6QfL          
+          value: yyyyyyyyyyyyyyyyyy          
         - name: PREDICTION_SERVICE_URL
           value: http://accident-classifier:5000
         - name: MINIO_ENDPOINT
