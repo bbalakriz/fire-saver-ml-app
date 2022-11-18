@@ -20,10 +20,9 @@ oc apply -f deployment/classifier-app.yaml
 ### 3. Create a Kafka instance in RHOSAK
 
 1. Go to [the RHOSAK Web UI](https://console.redhat.com/application-services/streams/kafkas) and create a topic with the name `images`
-2. Create a new Service Account for the Kafka instance
+2. Create a new Service Account for the Kafka instance and during the process, note down the CLIENT_ID and CLIENT_SECRET
 3. Add the permissions for the Kafka instance to allow the service account for both consumption and production of messages as shown below. 
 ![image](https://user-images.githubusercontent.com/37283315/199456832-90b1b9a9-db42-45c7-8e59-5f4807fb65e6.png)
-4. Note down the CLIENT_ID and CLIENT_SECRET
 
 ### 4. Deploy event-consumer-app
 
