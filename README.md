@@ -26,7 +26,8 @@ oc apply -f deployment/classifier-app.yaml
 
 ### 4. Deploy event-consumer-app
 
-Edit `fai-event-consumer.yaml` and set the point the value for the environment variables 
+Edit `fai-event-consumer.yaml` and set the point the value for the environment variables
+
 a.) `KAFKA_BOOTSTRAP_SERVERS` to the Kafka instance created in step 3. 
 b.) `CLIENT_ID` and `CLIENT_SECRET` to the values for the Kafka instance created in step 3. 
 
@@ -37,6 +38,7 @@ oc apply -f deployment/fai-event-consumer.yaml
 ### 5. Deploy event-consumer-app
 
 Edit `fai-event-emitter.yaml` and set the point the value for the environment variables
+
 a.) `KAFKA_BOOTSTRAP_SERVERS` to the Kafka instance created in step 3.
 b.) `CLIENT_ID` and `CLIENT_SECRET` to the values for the Kafka instance created in step 3. 
 
