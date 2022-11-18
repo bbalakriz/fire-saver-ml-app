@@ -23,10 +23,13 @@ oc apply -f deployment/classifier-app.yaml
 2. Create a new Service Account for the Kafka instance
 3. Add the permissions for the Kafka instance to allow the service account for both consumption and production of messages as shown below. 
 ![image](https://user-images.githubusercontent.com/37283315/199456832-90b1b9a9-db42-45c7-8e59-5f4807fb65e6.png)
+4. Note down the CLIENT_ID and CLIENT_SECRET
 
 ### 4. Deploy event-consumer-app
 
-Edit `fai-event-consumer.yaml` and set the point the value for the environment variable `KAFKA_BOOTSTRAP_SERVERS` to the Kafka instance created in step 3.
+Edit `fai-event-consumer.yaml` and set the point the value for the environment variables 
+a.) `KAFKA_BOOTSTRAP_SERVERS` to the Kafka instance created in step 3. 
+b.) `CLIENT_ID` and `CLIENT_SECRET` to the values for the Kafka instance created in step 3. 
 
 ```
 oc apply -f deployment/fai-event-consumer.yaml 
@@ -34,7 +37,9 @@ oc apply -f deployment/fai-event-consumer.yaml
 
 ### 5. Deploy event-consumer-app
 
-Edit `fai-event-emitter.yaml` and set the point the value for the environment variable `KAFKA_BOOTSTRAP_SERVERS` to the Kafka instance created in step 3.
+Edit `fai-event-emitter.yaml` and set the point the value for the environment variables
+a.) `KAFKA_BOOTSTRAP_SERVERS` to the Kafka instance created in step 3.
+b.) `CLIENT_ID` and `CLIENT_SECRET` to the values for the Kafka instance created in step 3. 
 
 ```
 oc apply -f deployment/fai-event-emitter.yaml 
