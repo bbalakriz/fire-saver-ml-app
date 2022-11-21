@@ -35,7 +35,7 @@ Edit `fai-event-consumer.yaml` and set the value for the following environment v
 oc apply -f deployment/fai-event-consumer.yaml 
 ```
 
-### 5. Deploy event-consumer-app
+### 5. Deploy event-emitter-app
 
 Edit `fai-event-emitter.yaml` and set the value for the following environment variables:
 
@@ -56,7 +56,7 @@ oc apply -f deployment/fai-event-emitter.yaml
 
 ### 7. Start monitoring the activity
 
-1. Get the application URL from the route `fai-event-consumer` and append `/plots.html` to it to access the monitoring application. 
+1. Get the application URL from the route `fai-event-consumer` and append `/plot.html` to it to access the monitoring application. 
 2. Monitor the situation to see if there's any fire/smoke activity
 
 ![image](https://user-images.githubusercontent.com/37283315/199463944-e1f314c0-14a3-41c0-beef-e6cb1daadbf7.png)
